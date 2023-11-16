@@ -30,7 +30,7 @@
 
  We show that the Transformer generalizes well to other tasks by applying it successfully to English constituency parsing both with large and limited training data.
 
->  우리는 Transformer가 다른 과제에도 적합하게 일반화 되는것을 제한된 데이터 및 방대한 양의 데이터응 활용한 영어 구성 구문 분석에 성공적으로 적용하여 증명 하였다.
+>  우리는 Transformer가 다른 과제에도 적합하게 일반화 되는것을 제한된 데이터 및 방대한 양의 데이터를 활용한 영어 구성 구문 분석에 성공적으로 적용하여 증명 하였다.
 
   
 
@@ -58,7 +58,7 @@
 
 Recent work has achieved significant improvements in computational efficiency through factorization tricks and conditional computation, while also improving model performance in case of the latter.
 
->  최근 연구로 인하여 컴퓨팅 효율은 factorization tricks과 conditional computation을 통하여 획기적인 발전을 이루었으며, 모델 성능 또한 conditional computation를 통하여 향상되었다.
+>  최근 연구로 인하여 컴퓨팅 효율은 factorization tricks(인수분해 트릭)과 conditional computation(조건부 연산)을 통하여 획기적인 발전을 이루었으며, 모델 성능 또한 conditional computation를 통하여 향상되었다.
 
 The fundamental constraint of sequential computation, however, remains.
 
@@ -86,16 +86,43 @@ The Transformer allows for significantly more parallelization and can reach a ne
 
  The goal of reducing sequential computation also forms the foundation of the Extended Neural GPU, ByteNet and ConvS2S, all of which use convolutional neural networks as basic building block, computing hidden representations in parallel for all input and output positions.
 
-> 
+> 시퀀셜 컴퓨팅(시계열적 연산)을 줄이는 것의 목적은 합성곱 신경망을 기본 구성으로 하며 숨겨진 표현을 모든 입출력 위치에 대해 병렬적으로 계산하는 Extended Neural GPU, ByteNet,그리고 ConvS2S의 기초를 구축하는것과 일맥상통 한다.
 
  In these models, the number of operations required to relate signals from two arbitrary input or output positions grows in the distance between positions, linearly for ConvS2S and logarithmically for ByteNet. 
 
-> 
+> 이 모델들의 경우 독립적인 입력과 출력 위치간의 관계를 수립하기 위한 연산이 ConvS2S는 선형적으로 ByteNet은 로그적으로 거리에 비례하여 증가한다. 
 
  This makes it more difficult to learn dependencies between distant positions. 
 
-> 
+> 이러한 특성은 서로 거리가 먼 위치간의 의존성을 학습하기 더욱 힘들게한다.
 
  In the Transformer this is reduced to a constant number of operations, albeit at the cost of reduced effective resolution due to averaging attention-weighted positions, an effect we counteract with Multi-Head Attention as described in section 3.2.
 
-> 
+> Transformer에서는 이러한 연산을 일정한 횟수로 감소시키는 반면 attension-weighted(특정 부분에 집중됨) 위치를 평균내어 활용하는 만큼 효과적인 해법이 줄어드는데, 우리는 3.2섹션에 설명된 Multi-Head Attention으로 이 문제를 대응 하였다.
+
+Self-attention, sometimes called intra-attention is an attention mechanism relating different positions of a single sequence in order to compute a representation of the sequence. 
+
+> Intra-attention이라고도 불리는 Self-attention은 특정 시퀀스를 대변할수있는 요인을 찾기위한 연산으로 단일 시퀀스에 대하여 다른 위치를 관계짓는 Attention 기법이다.
+
+ Self-attention has been used successfully in a variety of tasks including reading comprehension, abstractive summarization, textual entailment and learning task-independent sentence representations.
+
+> Self-attention은 지금까지 독해, 추출 요약, 자연어 추론 및 과제와 독립적인 문장 표현과 같이 다양한 과제에서 성공적으로 사용되어왔다.
+
+End-to-end memory networks are based on a recurrent attention mechanism instead of sequencealigned recurrence and have been shown to perform well on simple-language question answering and language modeling tasks.
+
+> End-to-end 메모리 네트워크들은 순차적으로 정렬된 회귀 방식 대신 recurrent attention기법을 기초로 한며 간단한 언어 질의 문제와 거대 모델링 과제에서 좋은 성능을 보였다.
+
+To the best of our knowledge, however, the Transformer is the first transduction model relying entirely on self-attention to compute representations of its input and output without using sequencealigned RNNs or convolution. 
+
+> 우리가 아는 한, Transformer는 순차적으로 정렬된 RNN이나 합성곱을 사용하지 않고 self-attention기법에 전적으로 의존하여 입출력에 대한 표현을 연산하는 첫 transduction 모델이다.
+>
+> *transduction : 데이터와 매칭되는 라벨을 통해서 일반화를 시키는것(induction)이 아닌, 데이터 자체에서 답을 찾는 방법*
+
+In the following sections, we will describe the Transformer, motivate self-attention and discuss its advantages over models such as [17, 18] and [9].
+
+> 이후 섹션에서 우리는 Transformer와 self-attention의 동기, 그리고 Transformer가 갖는 이점을 이야기 할 것이다.
+
+  
+
+#### Model Architecture
+
