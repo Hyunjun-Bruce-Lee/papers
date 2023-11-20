@@ -536,7 +536,7 @@ This would increase the maximum path length to $O(n/r)$.
 
 A single convolutional layer with kernel width $k < n$ does not connect all pairs of input and output positions.
 
-> $k <n $인 커널을 갖는 단일 합성곱 레이어는 모든 쌍의 입출력 위치를 이어주지 않는다.
+> $k < n$인 커널을 갖는 단일 합성곱 레이어는 모든 쌍의 입출력 위치를 이어주지 않는다.
 
 Doing so requires a stack of $O(n/k)$ convolutional layers in the case of contiguous kernels, or $O(log_{k}(n))$ in the case of dilated convolutions [18], increasing the length of the longest paths between any two positions in the network.
 
