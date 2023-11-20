@@ -82,7 +82,9 @@ The Transformer allows for significantly more parallelization and can reach a ne
 
 >  Transformer는 확연하게 뛰어난 병렬 처리를 가능하게하며, 8개의 P100 GPU를 이용한 12시간의 훈련을 거쳐 번역의 품질적측면에서 새로운 SOTA에 다가갈수있다.
 
+<br>
 
+<br>
 
 ### 2. Background
 
@@ -124,7 +126,9 @@ In the following sections, we will describe the Transformer, motivate self-atten
 
 >  이후 섹션에서 우리는 Transformer와 self-attention의 동기, 그리고 Transformer가 갖는 이점을 이야기 할 것이다.
 
-  
+<br>
+
+<br>
 
 ### 3. Model Architecture
 
@@ -149,6 +153,8 @@ At each step the model is auto-regressive, consuming the previously generated sy
 The Transformer follows this overall architecture using stacked self-attention and point-wise, fully connected layers for both the encoder and decoder, shown in the left and right halves of Figure 1, respectively.
 
 >  Transformer는 위의 그림에 나타나있듯이, 인코더와 디코더 모두 쌓여진(stacked) self-attention과 지점별로 완전이 이어진 레이어를 기본 골자로 한다.
+
+<br>
 
 #### 3.1 Encoder and Decoder stacks
 
@@ -198,19 +204,27 @@ This masking, combined with fact that the output embeddings are offset by one po
 
 > Masking은 하나의 위치에 대하여 임베딩 출력이 offset인 점과 더해져, 위치 $i$에 대한 예측이 순전히 $i$위치 이전의 도출된 출력들에만 의존하도록 보장한다.
 
+<br>
+
 #### 3.2 Attention
 
 An attention function can be described as mapping a query and a set of key-value pairs to an output, where the query, keys, values, and output are all vectors.
 
 > Attension 함수는, query, key, value와 output모두가 벡터일때, 출력(output)으로 query와 key-value 집합을 매핑하는 역할을 한다.
 
+<br>
+
 <!-- figure2 -->
+
+<br>
 
 The output is computed as a weighted sum of the values, where the weight assigned to each value is computed by a compatibility function of the query with the corresponding key.
 
 > 출력은  가중치가 적용된 value들의 합으로 계산되며, 각 vlaue에 할당된 가중치는 query와 그에 대응하는 key에 대한 Compatiblility function으로 계산된다.
 >
 > *Compatibility function : q,k를 입력받아 MatMul -> Scale -> Mask -> SoftMax -> 가중치를 생성해내는 부분 (figure2)*
+
+<br>
 
 #### 3.2.1 Scaled Dot-Product Attention
 
@@ -262,6 +276,8 @@ To counteract this effect, we scale the dot products by $\frac{1}{\sqrt{d_k}}$ .
 
 > 이를 해결하기 위하여 우리는 스칼라 곱을 $\frac{1}{\sqrt{d_k}}$로 보정해 주었다.
 
+<br>
+
 #### 3.2.2 Multi-Head Attention
 
 Instead of performing a single attention function with $d_{model}$-dimensional keys, values and queries, we found it beneficial to linearly project the queries, keys and values $h$ times with different, learned linear projections to $d_k$, $d_k$ and $d_v$ dimensions, respectively.
@@ -307,6 +323,8 @@ Due to the reduced dimension of each head, the total computational cost is simil
 
 > 각 헤드의 감소된 차원으로 인하여 전체적인 연산 비용은 모든 차원에 대한 single-head attention과 비슷해 진다.
 
+<br>
+
 #### 3.2.3 Applications of Attention in out Model
 
 The Transformer uses multi-head attention in three different ways:
@@ -349,6 +367,8 @@ The Transformer uses multi-head attention in three different ways:
 
   > 우리는 이를 허가되지 않은 연결에 대해서 softmax 함수로 입력되는 모든 값을 masking out( $-\infty$로 설정)처리하는 것으로 scaled dot-product attentiond에 적용하였다.
 
+<br>
+
 #### 3.3 Position-wise Feed-Forward Networks
 
 In addition to attention sub-layers, each of the layers in our encoder and decoder contains a fully connected feed-forward network, which is applied to each position separately and identically. 
@@ -375,6 +395,8 @@ The dimensionality of input and output is $d_{model} = 512$, and the inner-layer
 
 > 입력과 출력은 $d_{model} = 512$의 차원을 갖고 있으며, 내부 레이어의 경우 $d_{ff} = 2048$의 차원을 갖고있다.
 
+<br>
+
 #### 3.4 Embeddings and Softmax
 
 Similarly to other sequence transduction models, we use learned embeddings to convert the input tokens and output tokens to vectors of dimension $d_{model}$.
@@ -393,7 +415,11 @@ In the embedding layers, we multiply those weights by $\sqrt{d_{model}}$.
 
 > 임베딩 레이어에서 우리는 그 가중치들에 $\sqrt{d_{model}}$을 곱연산 한다.
 
+<br>
+
 <!-- Table 1-->
+
+<br>
 
 #### 3.5 Positional Encoding
 
@@ -448,5 +474,187 @@ We chose the sinusoidal version because it may allow the model to extrapolate to
 
 > 우리가 사인파 버전을 선택한 이유는 이것이 모델이 훈력중 만난 시퀀스보다 긴 시퀀스에 대하여  추정하게 하는것을 가능하게 해 줄수 있을수도 있기때문이다.
 
+<br>
+
 ### 4. Why Self-Attention
+
+In this section we compare various aspects of self-attention layers to the recurrent and convolutional layers commonly used for mapping one variable-length sequence of symbol representations $(x_1, ..., x_n)$ to another sequence of equal length $(z_1, ..., z_n)$, with $x_i$ , $z_i \in \mathbb{R}^d$ , such as a hidden layer in a typical sequence transduction encoder or decoder.
+
+> 이 섹션에서 우리는 self-attention 레이어와, $x_i,z_i \in \mathbb{R^d}$d 일때, $(x_i, ... , x_n)$으로 표현되는 가변 길이의 시퀀스를 같은길이의 $(z_1, ..., z_n$)로 표현되는 다른 시퀀스에 매핑할때 보편적으로 사용되는, 시퀀스 변환 인코더와 디코더내의 은닉층과 같은, 순환 및 합성곱 레이어를 다양한 관점에서 비교한다.
+
+Motivating our use of self-attention we consider three desiderata.
+
+> 이와더불어, 우리가 생각하는 3가지 이점을 통해 우리의 self-attention의 사용에 동기를 부여한다.
+
+One is the total computational complexity per layer.
+
+> 하나는 레이어당 전체적인 연산의 복잡도이다.
+
+Another is the amount of computation that can be parallelized, as measured by the minimum number of sequential operations required.
+
+> 다음은 시퀀셜 처리에 필요한 최소값으로 측적된 병렬가능한 연산의 양이다. 
+
+The third is the path length between long-range dependencies in the network.
+
+> 세번쨰는 네트워크 내의 긴 거리 의존성 간의 경로이다.
+
+Learning long-range dependencies is a key challenge in many sequence transduction tasks.
+
+> 다양한 시퀀스 변환 과제에 있어 장거리의 의존관계를 학습하는것은 주요한 챌린지이다.
+
+One key factor affecting the ability to learn such dependencies is the length of the paths forward and backward signals have to traverse in the network. 
+
+> 이러한 의존관계를 학습하는데 중요하게 작용하는 요소중 하나는 네트워크 내에서 순방향 및 역방향으로 흐르는 신호들이 통하는 경로의 길이이다.
+
+The shorter these paths between any combination of positions in the input and output sequences, the easier it is to learn long-range dependencies [12].
+
+> 시퀀스의 입출력 위치 조합에 상관없이 어느 위치 조합에서더라도, 이 경로들이 짧은 것은 장거리의 의존관계를 학습하기 쉽게 한다.
+
+Hence we also compare the maximum path length between any two input and output positions in networks composed of the different layer types.
+
+> 따라서 우리는 서로 다른 레이어 타입으로 구성된 네트워크의 입출력 조합간의 최대 거리역시 비교하였다.
+
+As noted in Table 1, a self-attention layer connects all positions with a constant number of sequentially executed operations, whereas a recurrent layer requires $O(n)$ sequential operations. 
+
+> Table 1에 명시되어 있듯이, self-attention 레이어는 상수 개수의 순차적으로 수행되는 연산을 통해 모든 위치를 연결하는 반면, 순환 레이어는 시퀀셜 연산을 위하여 $O(n)$의 시간복잡도를 요구한다.
+
+In terms of computational complexity, self-attention layers are faster than recurrent layers when the sequence length $n$ is smaller than the representation dimensionality $d$, which is most often the case with sentence representations used by state-of-the-art models in machine translations, such as word-piece [38] and byte-pair [31] representations.
+
+> 연산의 복잡도 측면에서,word-piece와 byte-pair 변환과 같이 대부분의 기계 번역에서의 SOTA모델들에서 그렇듯, 시퀀스 길이인 $n$이 표현(수치화된 시퀀스)의 차원인 $d$보다 작을경우 self-attention 레이어는 순환 레이어보다 빠르다.
+
+To improve computational performance for tasks involving very long sequences, self-attention could be restricted to considering only a neighborhood of size $r$ in the input sequence centered around the respective output position. 
+
+> 매우 긴 길이를 갖는 시퀀스를 포함하는 과제에 대한 연산 성능을 개선하기위하여, self-attention은 출력 위치를 중심으로하는 입력 시퀀스에 대하여 $r$만큼의 이웃만을 고려하도록 제한될 수 있다.
+
+This would increase the maximum path length to $O(n/r)$.
+
+> 이것은 최대 경로의 길이를 $O(n/r)$로 증가시킨다.
+
+ We plan to investigate this approach further in future work.
+
+> 우리는 이 접근 방법을 미래에 이어서 진행할 계획이다.
+
+A single convolutional layer with kernel width $k < n$ does not connect all pairs of input and output positions.
+
+> $k <n $인 커널을 갖는 단일 합성곱 레이어는 모든 쌍의 입출력 위치를 이어주지 않는다.
+
+Doing so requires a stack of $O(n/k)$ convolutional layers in the case of contiguous kernels, or $O(log_{k}(n))$ in the case of dilated convolutions [18], increasing the length of the longest paths between any two positions in the network.
+
+> 이를 위해서는(모든쌍의 입출력위치를 이어주는것), 확장된 커널일경우 $O(log_{k}(n))$개의,  연속적인 커널일 경우 $O(n/k)$개의 합성곱 레이어 뭉치가 필요하지만, 이는 네트워크 내에서의 가장큰 경로의 길이를 증가시킨다.
+
+Convolutional layers are generally more expensive than recurrent layers, by a factor of $k$.
+
+> 일반적으로 합성곱 레이어는 순환 레이어에 비해 $k$배만큼의 비용이 더 소모된다.
+
+ Separable convolutions [6], however, decrease the complexity considerably, to $O(k \cdot n \cdot d + n \cdot d^2 )$.
+
+> 그러나 분리가능한 합성곱의 경우 복잡도를 $O(k \cdot n \cdot d + n \cdot d^2 )$로 유의하게 감소시킨다.
+
+Even with $k = n$, however, the complexity of a separable convolution is equal to the combination of a self-attention layer and a point-wise feed-forward layer, the approach we take in our model.
+
+> 그럼에도 불구하고, 설령 $k=n$일 때도, 분리가능한 합성곱의 복잡도는 우리의 모델에 사용한 접근법인 point-wise feed-forward layer와 self-attention 레이어를 조합한 방법과 동일하다.
+
+As side benefit, self-attention could yield more interpretable models. 
+
+> 부수적인 이득으로, self-attention은 더 해석가능한(이해하기쉬운) 모델을 도출가능하게 한다.
+
+We inspect attention distributions from our models and present and discuss examples in the appendix. 
+
+> 우리는 우리의 모델의 attention 분포를 조사하고, 예시를 appendix(별책)에서 제공한다.
+
+Not only do individual attention heads clearly learn to perform different tasks, many appear to exhibit behavior related to the syntactic and semantic structure of the sentences.
+
+> 개별 attention head들이 분명하게도 서로다른 과제를 수행하기 위하여 학습하며, 많은 attention head가 문장의 의미론적 및 구문론적 구조와 관계된 습성을 보였다.
+
+<br>
+
+<br>
+
+### 5. Training
+
+This section describes the training regime for our models.
+
+> 이 섹션에서는 우리 모델의 훈련 환경 및 방법에 대하여 설명한다.
+
+<br>
+
+#### 5.1 Training Data and Batching
+
+We trained on the standard WMT 2014 English-German dataset consisting of about 4.5 million sentence pairs.
+
+> 우리는 4.5백만 쌍의 문장으로 구성된 표준 WMT 2014 English-German 데이터 세트를 사용하여 훈련을 진행하였다.
+
+Sentences were encoded using byte-pair encoding [3], which has a shared sourcetarget vocabulary of about 37000 tokens.
+
+> 문장들은 byte-pair인코딩[3]을 사용하여 인코딩 되었고, 이때 공유된 단어 사전에는 약 37,000개의 토큰이 있었다.
+
+For English-French, we used the significantly larger WMT 2014 English-French dataset consisting of 36M sentences and split tokens into a 32000 word-piece vocabulary [38].
+
+> 우리는 영어 - 불어의 경우, 영어 - 독어에 비해 확연히 큰, 36백만개의 문장과 32,000개의 word-piece로 분화된 토큰의 단어사전을 갖는 larger WMT 2014 English-French 데이터 세트를 사용하였다.
+
+Sentence pairs were batched together by approximate sequence length.
+
+> 문장 쌍은(데이터는) 시퀀스의 길이에 유사하게 batch처리 하였다.
+
+Each training batch contained a set of sentence pairs containing approximately 25000 source tokens and 25000 target tokens.
+
+> 각 훈련  batch에는 대략 25,000의 소스 토큰과 25,000개의 목표 토큰을 보유한 문장 쌍으로 이루어 졌다.
+
+<br>
+
+#### 5.2 Hardware and Schedule
+
+We trained our models on one machine with 8 NVIDIA P100 GPUs.
+
+> 우리는 우리의 모델은 8개의 NVIDIA P100 GPU로 학습 하였다.
+
+For our base models using the hyperparameters described throughout the paper, each training step took about 0.4 seconds. 
+
+> 우리의 기본 모델은 본 논문에서 설명된 하이퍼파라미터를 기준으로 각 훈련 스텝은 약 0.4초가 소요되었다.
+
+We trained the base models for a total of 100,000 steps or 12 hours. 
+
+> 우리는 우리의 기본 모델은 12시간동안 100,000스텝을 훈련 시켰다.
+
+For our big models,(described on the bottom line of table 3), step time was 1.0 seconds. 
+
+> 우리의 큰 모델은(table3의 아래쪽에 설명된) 각 스텝이 1.0초가 걸렸다.
+
+The big models were trained for 300,000 steps (3.5 days).
+
+> 큰 모델은 3.5일간 300,000스텝을 훈련 시켰다.
+
+<br>
+
+#### 5.2 Optimizer
+
+We used the Adam optimizer [20] with $\beta_{1} = 0.9$, $\beta_{2} = 0.98$ and $\epsilon = 10^{−9}$ .
+
+> 우리는 Adam optimizer를 사용하였다. ($\beta_{1} = 0.9$, $\beta_{1} = 0.9$, $\epsilon = 10^{−9}$)
+
+We varied the learning rate over the course of training, according to the formula:
+
+> 우리는 다음과 같은 공식을 토대로 훈련 과정에서 learning rate을 변화시켰다.
+
+$$
+lrate = d^{-0.5}_{model} \cdot min(step\_num^{-0.5},step\_num \cdot warmup\_steps^{-1.5})
+$$
+
+This corresponds to increasing the learning rate linearly for the first $warmup\_steps$ training steps, and decreasing it thereafter proportionally to the inverse square root of the step number.
+
+> 이는 첫 $warmup\_steps$훈련 단계 동안 선형적으로 learning rate을 증가시키고, 이후 $step\_num$의 제곱근의 역에 비례하여 learning rate을 감소시킨다.
+
+We used warmup_steps = 4000.
+
+> 우리는 $warmup\_steps =400$으로 설정 하였다.
+
+<br>
+
+#### 5.4 Rgularization
+
+We employ three types of regularization during training:
+
+> 우리는 훈련중 3개의 서로다른 유형의 규제항을 사용하였다.
+
+<!-- Table 2 -->
 
