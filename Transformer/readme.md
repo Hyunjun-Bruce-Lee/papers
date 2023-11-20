@@ -32,7 +32,9 @@
 
 >  우리는 Transformer가 다른 과제에도 적합하게 일반화 되는것을 제한된 데이터 및 방대한 양의 데이터를 활용한 영어 구성 구문 분석에 성공적으로 적용하여 증명 하였다.
 
-  
+<br>
+
+<br>
 
 ### 1. Introduction
 
@@ -80,7 +82,7 @@ The Transformer allows for significantly more parallelization and can reach a ne
 
 >  Transformer는 확연하게 뛰어난 병렬 처리를 가능하게하며, 8개의 P100 GPU를 이용한 12시간의 훈련을 거쳐 번역의 품질적측면에서 새로운 SOTA에 다가갈수있다.
 
-  
+
 
 ### 2. Background
 
@@ -394,4 +396,57 @@ In the embedding layers, we multiply those weights by $\sqrt{d_{model}}$.
 <!-- Table 1-->
 
 #### 3.5 Positional Encoding
+
+Since our model contains no recurrence and no convolution, in order for the model to make use of the order of the sequence, we must inject some information about the relative or absolute position of the tokens in the sequence. 
+
+> 우리의 모델에 순환 및 합성곱이 적용되어 있지 않기에, 우리는 모델이 시퀀스의 순서를 활용할 수 있게 하기 위해, 시퀀스 내의 토큰에 대한 상대적이거나 절대적인 위치 정보를 입력해야 했다.
+
+To this end, we add "positional encodings" to the input embeddings at the bottoms of the encoder and decoder stacks
+
+> 이를 위해 우리는 "positional encodings"를 인코더와 디코더 뭉치 하단에 위치한 입력 임베딩에 추가했다. 
+
+The positional encodings have the same dimension $d_{model}$ as the embeddings, so that the two can be summed.
+
+> 2개의 요소가 합연산이 가능하도록, Positional encodings는 임베딩과 동일한 $d_{model}$차원을 갖는다.
+
+There are many choices of positional encodings, learned and fixed [9].
+
+> positional encoding에는 학습되거나, 고정된방식의 다양한 선택지가 존대한다.
+
+In this work, we use sine and cosine functions of different frequencies:
+
+> 이 연구에서 우리는 서로 다른 주기를 갖는 사인 함수 와 코사인 함수를 사용하였다.
+
+$$
+\begin{align}
+PE_{pos,2i} &= sin(pos/10000^{2i/d_{model}})\\
+PE_{pos,2i+1} &= cos(pos/10000^{2i/d_{model}})
+\end{align}
+$$
+
+where pos is the position and i is the dimension. 
+
+> 여기서 pos는 위치이며 i는 차원이다.
+
+ That is, each dimension of the positional encoding corresponds to a sinusoid.
+
+> 즉, positional encoding의 각 차원은 사인파에 대응된다.
+
+The wavelengths form a geometric progression from $2\pi$ to $10000 \cdot 2\pi$.
+
+> 파장의 길이는 $2\pi$에서 $10000\cdot 2\pi$까지의 등비수열을 그린다.
+
+We chose this function because we hypothesized it would allow the model to easily learn to attend by relative positions, since for any fixed offset $k$, $P E_{pos+k}$ can be represented as a linear function of $P E_{pos}$.
+
+> 우리가 이 함수를 선택한 이유는 어떠한 고정된  offset $k$에 대하여 $PE_{pos+k}$가 선형 함수 $PE_{pos}$로 대변될 수 있기 때문에, 상대적인 위치를 기반으로 한 기여(예측에)를 모델이 쉽게 학습할 수 있게 해줄것이라고 가정하였기 때문이다.
+
+We also experimented with using learned positional embeddings [9] instead, and found that the two versions produced nearly identical results (see Table 3 row (E)). 
+
+> 우리는 학습된 positional embedding을 사용하는 경우[9]도 테스트 해 보았는데, 2개의 버전 모두 거의 동일한 결과를 도출해 내는것을 발경하였다. (table 3의 E행)
+
+We chose the sinusoidal version because it may allow the model to extrapolate to sequence lengths longer than the ones encountered during training.
+
+> 우리가 사인파 버전을 선택한 이유는 이것이 모델이 훈력중 만난 시퀀스보다 긴 시퀀스에 대하여  추정하게 하는것을 가능하게 해 줄수 있을수도 있기때문이다.
+
+### 4. Why Self-Attention
 
