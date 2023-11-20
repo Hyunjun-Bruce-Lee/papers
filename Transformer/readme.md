@@ -654,7 +654,35 @@ We used warmup_steps = 4000.
 
 We employ three types of regularization during training:
 
-> 우리는 훈련중 3개의 서로다른 유형의 규제항을 사용하였다.
+> 우리는 훈련중 3개 유형의 규제항을 사용하였다.
 
 <!-- Table 2 -->
+
+**Residual Dropout**	We apply dropout [33] to the output of each sub-layer, before it is added to the sub-layer input and normalized. 
+
+> **Residual Dropout**	우리는 서브 레이어의 인풋에 더해지고 정규화 되기전인 각 서브 레이어의 출력에 dropout을 적용하였다.
+
+In addition, we apply dropout to the sums of the embeddings and the positional encodings in both the encoder and decoder stacks.
+
+> 이와 더불어 우리는 인코더와 디코더 뭉치 모두 임베딩값과 위치정보 인코딩값이 더해진 값에 dropout을 적용하였다.
+
+For the base model, we use a rate of $P_{drop}=0.1$.
+
+> 기본 모델에 우리는 다음과 같은 dropout 비율을 지정하였다. $P_{drop} =0.1$
+
+**Label Smoothing**	During training, we employed label smoothing of value $\epsilon_{ls} = 0.1$ [36].
+
+> **Label Smoothing**	훈련과정에서 우리는 $\epsilon_{ls}=0.1$의 label smoothing을 사용하였다.
+
+This hurts perplexity, as the model learns to be more unsure, but improves accuracy and BLEU score.
+
+> 이것은 모델이 불확실성이 늘어나게 학습됨에 따라 PPL에 악영향을 미치지만, 정확도와 BLUE점수는 개선시킨다.
+
+<br>
+
+<br>
+
+### 6. Results
+
+#### 6.1 Machine Translation
 
