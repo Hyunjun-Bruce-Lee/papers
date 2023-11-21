@@ -860,7 +860,7 @@ Making generation less sequential is another research goals of ours.
 
 > 한국어 번역
 
-The code we used to train and evaluate our models is available at https://github.com/ tensorflow/tensor2tensor.
+The code we used to train and evaluate our models is available at https://github.com/tensorflow/tensor2tensor.
 
 > 한국어 번역
 
