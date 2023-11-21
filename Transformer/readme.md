@@ -686,3 +686,185 @@ This hurts perplexity, as the model learns to be more unsure, but improves accur
 
 #### 6.1 Machine Translation
 
+On the WMT 2014 English-to-German translation task, the big transformer model (Transformer (big) in Table 2) outperforms the best previously reported models (including ensembles) by more than 2.0 BLEU, establishing a new state-of-the-art BLEU score of 28.4.
+
+> WMT 2014 English-to-German translatio과제에서, 큰 Transformer 모델(Table2의 Transformer (big))은 이전까지 선보여진 모델들(앙상블을 포함한)에비하여 2.0 BLEU 점수 이상 기록하면서 28.4의 BLEU 점수로 새로운 SOTA모델이 되었다.
+
+The configuration of this model is listed in the bottom line of Table 3. 
+
+> 이 모델에 대한 구성정보는 Table3의 하단에 나타나있다.
+
+Training took 3.5 days on 8 P100 GPUs.
+
+> 훈련은 8개의 P100 GPU로 3.5일이 소요되었다.
+
+Even our base model surpasses all previously published models and ensembles, at a fraction of the training cost of any of the competitive models.
+
+> 우리의 베이스 모델은 이전까지 공개된 모든 모델과 앙상블들의 성능을 뛰어넘었을 뿐만아니라, 훈련비용 또한 경쟁 대상 모델들에 비하였을때 일부분밖에 들어가지 않았다.
+
+On the WMT 2014 English-to-French translation task, our big model achieves a BLEU score of 41.0, outperforming all of the previously published single models, at less than 1/4 the training cost of the previous state-of-the-art model.
+
+> WMT 2014 English-to-French translation과제에서는 우리의 큰 모델이 41.0의 BLEU 점수를 획득하여, 이전 SOTA 모델에 비하여 4분의 1도 안되는 훈련비용으로, 이전까지 공개된 단일모델의 성능을 뛰어넘었다.
+
+The Transformer (big) model trained for English-to-French used dropout rate $P_{drop} = 0.1$, instead of 0.3.
+
+> 영어 - 불어 번역을 위한 Transformer(big) 모델은 0.3의 dropout  비율 대신 $P_{drop} = 0.1$의 drop out 비율을 사용하였다.
+
+For the base models, we used a single model obtained by averaging the last 5 checkpoints, which were written at 10-minute intervals.
+
+> 베이스 모델로는 10분간격으로 기록된 제일 마지막 5개의 체크포인트의 평균을 활용한 단일 모델을 사용하였다.
+
+For the big models, we averaged the last 20 checkpoints.
+
+> 큰 모델로는 20개의 마지막 체크포인트의 평균을 이용하였다.
+
+We used beam search with a beam size of 4 and length penalty $\alpha = 0.6$ [38].
+
+> 우리는 4의 beam size와 $\alpha = 0.6$인 length penalty를 갖는 beam search를 사용하였다.
+
+These hyperparameters were chosen after experimentation on the development set. 
+
+> 이 하이퍼파라미터들은 개발 세트를 활용한 실험을 기반으로 선택되었다.
+
+We set the maximum output length during inference to input length + 50, but terminate early when possible [38].
+
+> 우리는 추론중 최대 출력 길이를 입력 길이 + 50으로 설정 하였으며, 조기 종료가 가능할 경우 추론을 종료하도록 하였다.
+
+Table 2 summarizes our results and compares our translation quality and training costs to other model architectures from the literature.
+
+> Table2에서는 문헌상의 다른 모델 구조와 우리의 모델간 번역의 질과 훈련비용을 비교하고 요약하였다.
+
+We estimate the number of floating point operations used to train a model by multiplying the training time, the number of GPUs used, and an estimate of the sustained single-precision floating-point capacity of each GPU.
+
+> 우리는 모델을 훈련시키기 위하여 사용된 부동소수점 연산을 추정하기 위하여 훈련시간, 사용된 GPU개수, 각 GPU의 유지 가능한 단정 부동소수점 용량을 곱하였다.
+
+<br>
+
+#### 6.2 Model Variations
+
+To evaluate the importance of different components of the Transformer, we varied our base model in different ways, measuring the change in performance on English-to-German translation on the development set, newstest2013.
+
+> Transformer를 구성하고있는 서로다른 요소들에 대한 중요도를 평가하기 위하여, 우리는 우리의 베이스 모델을 다양한 방식으로 변환 하였고, 개발 세트(newstest2013)을 활용한 영어 - 독어 번역의 성능을 측정하였다.
+
+We used beam search as described in the previous section, but no checkpoint averaging. 
+
+> 우리는 이전 섹션에서 다루어진 baem search를 체크포인트 평균화 작업 없이 활용하였다.
+
+We present these results in Table 3.
+
+> 우리는 이에 대한 결과를 Table 3에 싫어 두었다.
+
+In Table 3 rows (A), we vary the number of attention heads and the attention key and value dimensions, keeping the amount of computation constant, as described in Section 3.2.2.
+
+> 섹션 3.2.2에서 설명하였듯이, Table 3의 A행에 우리는 소요되는 연산량을 유하면서 attention head와 key, value, 그리고 차원을 다양하게 변화 시키었다.
+
+While single-head attention is 0.9 BLEU worse than the best setting, quality also drops off with too many heads.
+
+> 최적의 조합에 비하여 single-head attention이 0.9 BLEU 점수 만큼 성능이 떨어지며, 너무 많은 헤드가 있을경우 역시 춤질이 떨어진다.
+
+In Table 3 rows (B), we observe that reducing the attention key size $d_k$ hurts model quality.
+
+> Table 3의 B행에서  attention key size인 $d_k$를 감소시키는 것이 모델의 품질을 저하 시키는것이 관찰되었다.
+
+This suggests that determining compatibility is not easy and that a more sophisticated compatibility function than dot product may be beneficial. 
+
+> 이는 최적의 호환성을 갖는 요인들을 찾아내는것이 쉽지 않으며, 보다 정교한 호환성 함수가 스칼라곱보다 더 유익할 수 있음을 시사한다.
+
+We further observe in rows (C) and (D) that, as expected, bigger models are better, and dropout is very helpful in avoiding over-fitting.
+
+> 우리는 C와 D행에서 예상했던대로 모델이 크면 클수록 더 좋다 라는 사실과 dropout이 과적합을 방지하는데 아주 효과적이라는 것을 확인하였다.
+
+In row (E) we replace our sinusoidal positional encoding with learned positional embeddings [9], and observe nearly identical results to the base model.
+
+> E행에서 우리는 사인파를 활용한 위치정보 인코딩을 학습된 위치 정보 임베딩으로 교체하였고, 베이스 모델에서 이 두가지 방법이 거의 동일한 결과를 내는것을 확인하였다.
+
+<br>
+
+#### 6.3 English Constituency Parsing
+
+To evaluate if the Transformer can generalize to other tasks we performed experiments on English constituency parsing.
+
+> Transformer의 다른 과제에 대한 일반화 성능을 평가하기 위하여 우리는 영어 구문분석ㅔ 대한 실험을 진행하였다.
+
+This task presents specific challenges: the output is subject to strong structural constraints and is significantly longer than the input.
+
+> 이 과제는 출력이 강한 구조적 제약에 종속적이며, 입력보다 확연히 길다는 특정 챌린지를 제시하였다.
+
+Furthermore, RNN sequence-to-sequence models have not been able to attain state-of-the-art results in small-data regimes [37].
+
+> 더욱이, RNN기반의 sequence-tosequence 모델은 작은 데이터 환경에서 SOTA라고 할만한 결과를 도출하지 못하였다.
+
+We trained a 4-layer transformer with $d_{model} = 1024$ on the Wall Street Journal (WSJ) portion of the Penn Treebank [25], about 40K training sentences.
+
+> 우리는 약 40천(4만)건의 훈련용 문장을 갖는 Wall Street Journal (WSJ) portion of the Penn Treebank데이터로 $d_{model} = 1024$인 4개 레이어의 transformer를 훈련시켰다.
+
+We also trained it in a semi-supervised setting, using the larger high-confidence and BerkleyParser corpora from with approximately 17M sentences [37].
+
+> 우리는 또한, 이를 semi-supervised(준-지도)환경에서, 더 거대하고 신뢰도 있는, 대략 17백만 개의 문장을 갖고있는 말뭉치인 BerkleyParser corpora를 활용하여 훈련시켰다.
+
+We used a vocabulary of 16K tokens for the WSJ only setting and a vocabulary of 32K tokens for the semi-supervised setting.
+
+> 우리는 WSJ 데이터를 활용한 케이스에서는 16천개의 토큰을 갖는 사전을 사용하였으며, semi-supervised 환경에서는 32천개의 사전을 사용하였다.
+
+We performed only a small number of experiments to select the dropout, both attention and residual (section 5.4), learning rates and beam size on the Section 22 development set, all other parameters remained unchanged from the English-to-German base translation model.
+
+> 우리는 attention 및 residual에서의 dropout, learning rate 및 beam size를 선정하기위해 Section 22 development set에서 적은 양의 실험을 수행하였으며, 다른 모든 파라미터의 경우 영어 - 독어 베이스 번역 모델에서 사용한 것과 동일하게 설정하였다.
+
+During inference, we increased the maximum output length to input length + 300. 
+
+> 추론 과정에서, 우리는 최대 출력 길이를 입력 길이 + 300으로 증가시켰다.
+
+We used a beam size of 21 and $\alpha = 0.3$ for both WSJ only and the semi-supervised setting.
+
+> 우리는 21의 beam size와 $\alpha = 0.3$을 WSJ 및 semi-supervised환경에서 사용하였다.
+
+Our results in Table 4 show that despite the lack of task-specific tuning our model performs surprisingly well, yielding better results than all previously reported models with the exception of the Recurrent Neural Network Grammar [8].
+
+> Table 4에서 우리의 결과는 특정 과제에 집중한 튜닝이 부족한 상황에서도, Recurrent Neural Network Grammar를 제외하고, 지금까지 보고된 모델들 보다 좋은 결과를 이끌어낸 우리의 모델이 매우 좋은 성능을 낸다는것을 보여준다.
+
+In contrast to RNN sequence-to-sequence models [37], the Transformer outperforms the BerkeleyParser [29] even when training only on the WSJ training set of 40K sentences.
+
+> RNN sequence-to-sequence 모델과는 반대로, Transformer는 40천 문장의 WSJ 훈련 세트로만 훈련되었음에도 BerkeleyParser를 뛰어넘는 성능을 보였다.
+
+<br>
+
+<br>
+
+### 7. Conclusion
+
+In this work, we presented the Transformer, the first sequence transduction model based entirely on attention, replacing the recurrent layers most commonly used in encoder-decoder architectures with multi-headed self-attention.
+
+> 본 연구에서 우리는 처음으로, 인코더-디코더 구조에서 보편적으로 사용된 순환 레이어를 multi-headed self-attention으로 대체한, 완전하게 attention에 기반한 sequence transduction 모델인 Transformer를 소개하였다. 
+
+For translation tasks, the Transformer can be trained significantly faster than architectures based on recurrent or convolutional layers.
+
+> 번역 과제에 있어서 Transformer는 순환 또는 합성곱 레이어에 기반한 구조보다 확연하게 빨리 학습될 수 있다.
+
+On both WMT 2014 English-to-German and WMT 2014 English-to-French translation tasks, we achieve a new state of the art.
+
+> WMT 2014 English-to-German와 English-to-French번역 과제 모두에서 우리는 새로운 SOTA를 달성하였다.
+
+ In the former task our best model outperforms even all previously reported ensembles.
+
+> 이전 과제에 대해서 우리의 best model은 이전에 보고된 모든 앙상블또한 뛰어넘는다.
+
+We are excited about the future of attention-based models and plan to apply them to other tasks. 
+
+> 우리는 미래의 attention에 기반한 모델들에 대하여 큰 흥미를 갖고있으며, 그들을 우리의 과제에 적용할 계혹을 갖고있다.
+
+We plan to extend the Transformer to problems involving input and output modalities other than text and to investigate local, restricted attention mechanisms to efficiently handle large inputs and outputs such as images, audio and video.
+
+> 한국어 번역
+
+Making generation less sequential is another research goals of ours.
+
+> 한국어 번역
+
+The code we used to train and evaluate our models is available at https://github.com/ tensorflow/tensor2tensor.
+
+> 한국어 번역
+
+Acknowledgements We are grateful to Nal Kalchbrenner and Stephan Gouws for their fruitful comments, corrections and inspiration.
+
+> 한국어 번역
+
