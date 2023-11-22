@@ -864,5 +864,5 @@ The code we used to train and evaluate our models is available at https://github
 
 > 우리가 훈련 및 평가에 사용한 코드는 다음의 주소에서 확인 가능하다. https://github.com/tensorflow/tensor2tensor.
 
-Acknowledgements We are grateful to Nal Kalchbrenner and Stephan Gouws for their fruitful comments, corrections and inspiration.
+**Acknowledgements** We are grateful to Nal Kalchbrenner and Stephan Gouws for their fruitful comments, corrections and inspiration.
 
