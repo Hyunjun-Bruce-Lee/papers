@@ -186,7 +186,7 @@ That is, the output of each sub-layer is LayerNorm(x + Sublayer(x)), where Subla
 
 **Decoder**: The decoder is also composed of a stack of N = 6 identical layers.
 
-> **디코더**: 디코더 역시 인코더와 동일하게 6개(N=6)의 완전히 동일항 레이어로 구성된다.
+> **디코더**: 디코더 역시 인코더와 동일하게 6개(N=6)의 완전히 동일한 레이어로 구성된다.
 
 In addition to the two sub-layers in each encoder layer, the decoder inserts a third sub-layer, which performs multi-head attention over the output of the encoder stack. 
 
@@ -854,17 +854,15 @@ We are excited about the future of attention-based models and plan to apply them
 
 We plan to extend the Transformer to problems involving input and output modalities other than text and to investigate local, restricted attention mechanisms to efficiently handle large inputs and outputs such as images, audio and video.
 
-> 한국어 번역
+> 우리는 Transformer를 문자형식의 데이터에 국한되지 않고, 이미지, 오디오 및 비디오와 같은 크기가 큰 입출력 또한 효과적으로 다룰수 있도록 지역적으로 제한된 attention 기법을 조사할 계획을 하고 있다.
 
 Making generation less sequential is another research goals of ours.
 
-> 한국어 번역
+> 생성을 덜 시퀀셜(연속적)적이게 하는것 또한 우리의 또다른 연구 목표이다.
 
 The code we used to train and evaluate our models is available at https://github.com/tensorflow/tensor2tensor.
 
-> 한국어 번역
+> 우리가 훈련 및 평가에 사용한 코드는 다음의 주소에서 확인 가능하다. https://github.com/tensorflow/tensor2tensor.
 
 Acknowledgements We are grateful to Nal Kalchbrenner and Stephan Gouws for their fruitful comments, corrections and inspiration.
-
-> 한국어 번역
 
